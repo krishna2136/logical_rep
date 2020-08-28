@@ -1,0 +1,31 @@
+krishna=# SHOW wal_level;
+ wal_level
+-----------
+  logical
+  <1 row>
+
+
+krishna=# create table table1(x int primary key, y int);
+CREATE TABLE
+krishna=# insert into table1 values(10, 11);
+INSERT 0 2
+krishna=# create publication my_publication for table table1;
+CREATE PUBLICATION
+
+krishna=# create table table1(x int primary key, y int);
+CREATE TABLE
+krishna=#  CREATE SUBSCRIPTION my_subscription
+CONNECTION 'host=localhost port=5432 dbname=krishna' PUBLICATION my_publication;
+krishna=# SELECT * FROM table1;
+ x  |  y
+----------
+ 10 |  11
+ <1 row>
+
+krishna=# insert into table1 values(20, 25); 
+krishna=# SELECT * FROM table1;
+  x  |  y
+----------
+  10 |  11
+  20 |  25
+ <2 rows>

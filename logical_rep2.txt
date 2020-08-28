@@ -1,0 +1,44 @@
+krishna=> CREATE TABLE logic (col1 int, col2 int);
+CREATE TABLE
+krishna=> INSERT INTO logic VALUES (1,10), (2,20), (3,30);
+INSERT 0 3
+
+krishna=# CREATE PUBLICATION mypub FOR ALL TABLES;
+CREATE PUBLICATION
+
+krishna=# CREATE TABLE logic (col1 int, col2 int, col3 text NOT NULL DEFAULT 'hi');
+CREATE TABLE
+
+krishna=# CREATE SUBSCRIPTION mysub CONNECTION 'user=repuser password=reppass host=127.0.0.1 port=5432 dbname=src' PUBLICATION mypub;
+
+krishna=# SELECT * FROM logic;
+ col1 | col2 | col3
+------+------+------
+    1 |   10 | hi
+    2 |   20 | hi
+    3 |   30 | hi
+(3 rows)
+
+krishna=# ALTER TABLE logic ADD newcol int;
+ALTER TABLE
+krishna=# INSERT INTO logic VALUES (-1, -10, -100);
+INSERT 0 1
+
+krishna=# SELECT * FROM logic;
+ col1 | col2 | col3
+------+------+------
+    1 |   10 | hi
+    2 |   20 | hi
+    3 |   30 | hi
+(3 rows)
+
+krishna=# ALTER TABLE logic ADD newcol int;
+ALTER TABLE
+krishna=# SELECT * FROM logic;
+ col1 | col2 | col3 | newcol
+------+------+------+--------
+    1 |   10 | hi  |
+    2 |   20 | hi  |
+    3 |   30 | hi  |
+   -1 |  -10 | hi  |   -100
+(4 rows)
